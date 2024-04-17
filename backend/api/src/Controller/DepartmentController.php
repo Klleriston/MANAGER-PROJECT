@@ -24,7 +24,29 @@ class DepartmentController extends AbstractController
         if (!$departments) {
             return new JsonResponse(['error' => 'No departments found'], Response::HTTP_NOT_FOUND);
         }
-        return new JsonResponse(['departments' => $departments], Response::HTTP_OK);
+
+        $data = [];
+        foreach ($departments as $department)
+        {
+            $employees = [];
+            foreach ($department->getEmployees() as $employee)
+            {
+                $employees[] = [
+                    'id' => $employee->getId(),
+                    'name' => $employee->getName(),
+                    'phone' => $employee->getPhone(),
+                    'dependents' => $employee->getDependents(),
+                    'document' => $employee->getDocument(),
+                ];
+            }
+            $data[] = [
+                'id' => $department->getId(),
+                'title' => $department->getTitle(),
+                'acronym' => $department->getAcronym(),
+                'employees' => $employees
+            ];
+        }
+        return new JsonResponse(['departments' => $data], Response::HTTP_OK);
     }
 
     #[Route('/create', name: 'app_department_new', methods: ['POST'])]
@@ -49,10 +71,30 @@ class DepartmentController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_department_show', methods: ['GET'])]
-    public function show(Department $department): JsonResponse
+    public function show(DepartmentRepository $department, int $id): JsonResponse
     {
-        $employees = $department->getEmployees()->toArray();
-        return new JsonResponse(['employees' => $employees], Response::HTTP_OK);
+        $department = $department->find($id);
+        if (!$department) {
+            return new JsonResponse(['error' => 'Ops'], Response::HTTP_NOT_FOUND);
+        }
+        $employees = [];
+        foreach ($department->getEmployees() as $employee)
+        {
+            $employees[] = [
+                'id' => $employee->getId(),
+                'name' => $employee->getName(),
+                'phone' => $employee->getPhone(),
+                'dependents' => $employee->getDependents(),
+                'document' => $employee->getDocument(),
+            ];
+        }
+        $data[] = [
+            'id' => $department->getId(),
+            'name' => $department->getTitle(),
+            'phone' => $department->getAcronym(),
+            'department' => $employees
+        ];
+        return new JsonResponse(['department' => $data], Response::HTTP_OK);
     }
 
     #[Route('/{id}/edit', name: 'app_department_edit', methods: ['PUT'])]
