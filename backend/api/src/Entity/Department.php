@@ -25,11 +25,11 @@ class Department
      * @var Collection<int, Employee>
      */
     #[ORM\OneToMany(targetEntity: Employee::class, mappedBy: 'department_id', orphanRemoval: true)]
-    private Collection $employeers;
+    private Collection $employees;
 
     public function __construct()
     {
-        $this->employeers = new ArrayCollection();
+        $this->employees = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -63,15 +63,15 @@ class Department
     /**
      * @return Collection<int, Employee>
      */
-    public function getEmployeers(): Collection
+    public function getEmployees(): Collection
     {
-        return $this->employeers;
+        return $this->employees;
     }
 
     public function addEmployeer(Employee $employeer): static
     {
-        if (!$this->employeers->contains($employeer)) {
-            $this->employeers->add($employeer);
+        if (!$this->employees->contains($employeer)) {
+            $this->employees->add($employeer);
             $employeer->setDepartmentId($this);
         }
         return $this;
@@ -79,7 +79,7 @@ class Department
 
     public function removeEmployeer(Employee $employeer): static
     {
-        if ($this->employeers->removeElement($employeer)) {
+        if ($this->employees->removeElement($employeer)) {
             if ($employeer->getDepartmentId() === $this) {
                 $employeer->setDepartmentId(null);
             }

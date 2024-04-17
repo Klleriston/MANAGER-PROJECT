@@ -6,7 +6,6 @@ use App\Entity\Department;
 use App\Entity\Employee;
 use App\Repository\EmployeeRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use PHPUnit\Util\Json;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,13 +19,13 @@ class EmployeeController extends AbstractController
     {
         $employees = $employeeRepository->findAll();
         if (!$employees) {
-            return new JsonResponse(['error' => 'Ops'], Response::HTTP_NOT_FOUND);
+            return new JsonResponse(['error' => 'No employees found'], Response::HTTP_NOT_FOUND);
         }
         return new JsonResponse(['employees' => $employees], Response::HTTP_OK);
     }
 
     #[Route('/employee/create', name: 'app_employee_new', methods: ['POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
 
@@ -37,14 +36,13 @@ class EmployeeController extends AbstractController
             }
         }
 
-        $employee = new Employee();
-
         $departmentId = $data['department_id'];
         $department = $entityManager->getRepository(Department::class)->find($departmentId);
         if (!$department) {
             return new JsonResponse(['error' => 'Department not found'], Response::HTTP_NOT_FOUND);
         }
 
+        $employee = new Employee();
         $employee->setName($data['name']);
         $employee->setDocument($data['document']);
         $employee->setDepartmentId($department);
@@ -57,25 +55,15 @@ class EmployeeController extends AbstractController
     }
 
     #[Route('/employee/{id}', name: 'app_employee_show', methods: ['GET'])]
-    public function show(EmployeeRepository $employeeRepository, int $id): Response
+    public function show(Employee $employee): JsonResponse
     {
-        $employee = $employeeRepository->find($id);
-        if (!$employee) {
-            return new JsonResponse(['error' => 'Ops'], Response::HTTP_NOT_FOUND);
-        }
-        return new JsonResponse(['employees' => $employee], Response::HTTP_OK);
+        return new JsonResponse(['employee' => $employee], Response::HTTP_OK);
     }
 
-    #[Route('/employee/{id}/edit', name: 'app_employee_edit', methods: ['PATCH', 'PUT'])]
-    public function edit(Request $request, Employee $employee, EntityManagerInterface $entityManager, int $id): Response
+    #[Route('/employee/{id}/edit', name: 'app_employee_edit', methods: ['PUT'])]
+    public function edit(Request $request, Employee $employee, EntityManagerInterface $entityManager): JsonResponse
     {
         $data = json_decode($request->getContent(), true);
-
-        $employee = $entityManager->getRepository(Employee::class)->find($id);
-
-        if (!$employee) {
-            return new JsonResponse(['error' => 'Ops'], Response::HTTP_NOT_FOUND);
-        }
 
         if (isset($data['name'])) {
             $employee->setName($data['name']);
@@ -84,7 +72,8 @@ class EmployeeController extends AbstractController
             $employee->setDocument($data['document']);
         }
         if (isset($data['department_id'])) {
-            $department = $entityManager->getRepository(Department::class)->find($data['department_id']);
+            $departmentId = $data['department_id'];
+            $department = $entityManager->getRepository(Department::class)->find($departmentId);
             if (!$department) {
                 return new JsonResponse(['error' => 'Department not found'], Response::HTTP_NOT_FOUND);
             }
@@ -96,22 +85,17 @@ class EmployeeController extends AbstractController
         if (isset($data['phone'])) {
             $employee->setPhone($data['phone']);
         }
+
         $entityManager->flush();
-        return new JsonResponse(['Message' => 'Employee updated !'], Response::HTTP_OK);
+        return new JsonResponse(['message' => 'Employee updated'], Response::HTTP_OK);
     }
 
     #[Route('/employee/{id}', name: 'app_employee_delete', methods: ['DELETE'])]
-    public function delete(EntityManagerInterface $entityManager, int $id): Response
+    public function delete(Employee $employee, EntityManagerInterface $entityManager): JsonResponse
     {
-       $employee = $entityManager->getRepository(Employee::class)->find($id);
-        if (!$employee) {
-            return new JsonResponse(['error' => 'Ops'], Response::HTTP_NOT_FOUND);
-        }
-
         $entityManager->remove($employee);
         $entityManager->flush();
 
         return new JsonResponse(['message' => 'Employee deleted'], Response::HTTP_OK);
-
     }
 }

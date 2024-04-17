@@ -4,27 +4,63 @@ controllers:
         namespace: App\Controller
     type: attribute
 
+#get all
 app_employee_index:
     path: '/employee'
     controller: 'App\Controller\EmployeeController::index'
     methods: 'GET'
 
+#post
 app_employee_new:
     path: '/employee/create'
     controller: 'App\Controller\EmployeeController::new'
     methods: 'POST'
 
+#get by id
 app_employee_show:
     path: '/employee/{id}'
     controller: 'App\Controller\EmployeeController::show'
     methods: 'GET'
 
+#put
 app_employee_edit:
     path: '/employee/{id}/edit'
     controller: 'App\Controller\EmployeeController::edit'
-    methods: 'PATCH | POST'
+    methods: 'POST'
 
+#delete
 app_employee_delete:
     path: '/employee/{id}'
     controller: 'App\Controller\EmployeeController::delete'
     methods: 'DELETE'
+
+#get all
+app_department_index:
+    path: '/department'
+    controller: 'App\Controller\DepartmentController::index'
+    methods: 'GET'
+
+app_department_new:
+    path: '/department/create'
+    controller: 'App\Controller\DepartmentController::new'
+    methods: 'POST'
+
+app_department_show:
+    path: '/department/{id}'
+    controller: 'App\Controller\DepartmentController::show'
+    methods: 'GET'
+
+app_department_edit:
+    path: '/department/{id}/edit'
+    controller: 'App\Controller\DepartmentController::edit'
+    methods: 'PUT'
+
+app_department_delete:
+    path: '/department/{id}'
+    controller: 'App\Controller\DepartmentController::delete'
+    methods: 'DELETE'
+
+
+
+
+
