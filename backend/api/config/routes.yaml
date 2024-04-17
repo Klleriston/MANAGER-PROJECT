@@ -3,3 +3,28 @@ controllers:
         path: ../src/Controller/
         namespace: App\Controller
     type: attribute
+
+app_employee_index:
+    path: '/employee'
+    controller: 'App\Controller\EmployeeController::index'
+    methods: 'GET'
+
+app_employee_new:
+    path: '/employee/create'
+    controller: 'App\Controller\EmployeeController::new'
+    methods: 'POST'
+
+app_employee_show:
+    path: '/employee/{id}'
+    controller: 'App\Controller\EmployeeController::show'
+    methods: 'GET'
+
+app_employee_edit:
+    path: '/employee/{id}/edit'
+    controller: 'App\Controller\EmployeeController::edit'
+    methods: 'PATCH | POST'
+
+app_employee_delete:
+    path: '/employee/{id}'
+    controller: 'App\Controller\EmployeeController::delete'
+    methods: 'DELETE'

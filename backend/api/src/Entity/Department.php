@@ -57,7 +57,6 @@ class Department
     public function setAcronym(string $acronym): static
     {
         $this->acronym = $acronym;
-
         return $this;
     }
 
@@ -75,14 +74,12 @@ class Department
             $this->employeers->add($employeer);
             $employeer->setDepartmentId($this);
         }
-
         return $this;
     }
 
     public function removeEmployeer(Employee $employeer): static
     {
         if ($this->employeers->removeElement($employeer)) {
-            // set the owning side to null (unless already changed)
             if ($employeer->getDepartmentId() === $this) {
                 $employeer->setDepartmentId(null);
             }

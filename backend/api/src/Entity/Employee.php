@@ -43,7 +43,6 @@ class Employee
     public function setName(string $name): static
     {
         $this->name = $name;
-
         return $this;
     }
 
@@ -55,7 +54,6 @@ class Employee
     public function setDependents(?int $dependents): static
     {
         $this->dependents = $dependents;
-
         return $this;
     }
 
@@ -67,7 +65,6 @@ class Employee
     public function setDocument(string $document): static
     {
         $this->document = $document;
-
         return $this;
     }
 
@@ -79,7 +76,6 @@ class Employee
     public function setPhone(string $phone): static
     {
         $this->phone = $phone;
-
         return $this;
     }
 
@@ -91,7 +87,6 @@ class Employee
     public function setDepartmentId(?Department $department_id): static
     {
         $this->department_id = $department_id;
-
         return $this;
     }
 }
